@@ -68,6 +68,7 @@ export class UserService {
       const user = this.databaseService.getUserById(id);
       if (user) {
         this.databaseService.deleteUser(id);
+        return;
       }
       throw new HttpException(ERR_MSG.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
