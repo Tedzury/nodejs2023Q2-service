@@ -41,19 +41,20 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
+      const dto = new UpdateUserDto(updateUserDto);
+
+      const validationErrors = await validate(dto);
+
+      if (validationErrors.length > 0) {
+        const msg = buildValidationErrMsg(validationErrors);
+        throw new HttpException(msg, HttpStatus.BAD_REQUEST);
+      }
+
       const user = this.databaseService.getUserById(id);
       if (user) {
-        const dto = new UpdateUserDto(updateUserDto);
-
-        const validationErrors = await validate(dto);
-
-        if (validationErrors.length > 0) {
-          const msg = buildValidationErrMsg(validationErrors);
-          throw new HttpException(msg, HttpStatus.BAD_REQUEST);
-        }
         if (dto.oldPassword === user.password) {
-          this.databaseService.updateUser(user, dto.newPassword);
-          return user;
+          const res = this.databaseService.updateUser(user, dto.newPassword);
+          return res;
         }
         throw new HttpException(ERR_MSG.WRONG_PASS, HttpStatus.FORBIDDEN);
       }

@@ -60,10 +60,15 @@ export class DatabaseService {
   createUser(createUserDto: CreateUserDto) {
     const newUser = new User(createUserDto);
     this.usersList.push(newUser);
-    return newUser;
+    const response = { ...newUser };
+    delete response.password;
+    return response;
   }
   updateUser(user: User, newPass: string) {
     user.updatePassword(newPass);
+    const response = { ...user };
+    delete response.password;
+    return response;
   }
   deleteUser(id: string) {
     this.usersList = this.usersList.filter((user) => user.id !== id);
