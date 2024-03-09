@@ -6,6 +6,7 @@ import {
   Min,
   Max,
   IsOptional,
+  IsUUID,
 } from 'class-validator';
 
 export class CreateAlbumDto {
@@ -21,6 +22,7 @@ export class CreateAlbumDto {
 
   @IsOptional()
   @IsString()
+  @IsUUID(4)
   artistId: string | null;
 
   constructor({

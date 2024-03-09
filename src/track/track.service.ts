@@ -20,6 +20,23 @@ export class TrackService {
       const msg = buildValidationErrMsg(validationErrors);
       throw new HttpException(msg, HttpStatus.BAD_REQUEST);
     }
+
+    const { artistId } = dto;
+    if (artistId) {
+      const artist = this.databaseService.getArtistById(artistId);
+      if (!artist) {
+        throw new HttpException(ERR_MSG.ARTIST_REJECT, HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    const { albumId } = dto;
+    if (albumId) {
+      const album = this.databaseService.getAlbumById(albumId);
+      if (!album) {
+        throw new HttpException(ERR_MSG.ALBUM_REJECT, HttpStatus.BAD_REQUEST);
+      }
+    }
+
     const track = this.databaseService.createTrack(dto);
     return track;
   }
@@ -51,6 +68,23 @@ export class TrackService {
           const msg = buildValidationErrMsg(validationErrors);
           throw new HttpException(msg, HttpStatus.BAD_REQUEST);
         }
+
+        const { artistId } = dto;
+        if (artistId) {
+          const artist = this.databaseService.getArtistById(artistId);
+          if (!artist) {
+            throw new HttpException(ERR_MSG.ARTIST_REJECT, HttpStatus.BAD_REQUEST);
+          }
+        }
+
+        const { albumId } = dto;
+        if (albumId) {
+          const album = this.databaseService.getAlbumById(albumId);
+          if (!album) {
+            throw new HttpException(ERR_MSG.ALBUM_REJECT, HttpStatus.BAD_REQUEST);
+          }
+        }
+
         track.updateTrack(dto);
         return track;
       }

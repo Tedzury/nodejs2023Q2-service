@@ -20,6 +20,15 @@ export class AlbumService {
       const msg = buildValidationErrMsg(validationErrors);
       throw new HttpException(msg, HttpStatus.BAD_REQUEST);
     }
+
+    const { artistId } = dto;
+    if (artistId) {
+      const artist = this.databaseService.getArtistById(artistId);
+      if (!artist) {
+        throw new HttpException(ERR_MSG.ARTIST_REJECT, HttpStatus.BAD_REQUEST);
+      }
+    }
+
     const album = this.databaseService.createAlbum(dto);
     return album;
   }
@@ -51,6 +60,15 @@ export class AlbumService {
           const msg = buildValidationErrMsg(validationErrors);
           throw new HttpException(msg, HttpStatus.BAD_REQUEST);
         }
+
+        const { artistId } = dto;
+        if (artistId) {
+          const artist = this.databaseService.getArtistById(artistId);
+          if (!artist) {
+            throw new HttpException(ERR_MSG.ARTIST_REJECT, HttpStatus.BAD_REQUEST);
+          }
+        }
+
         album.updateAlbum(dto);
         return album;
       }
