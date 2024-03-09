@@ -8,6 +8,8 @@ const ERR_MSG = {
     'There is no such track with provided ID in database. Check your track ID one more time.',
   ARTIST_NOT_FOUND:
     'There is no such artist with provided ID in database. Check your artist ID one more time.',
+  ALBUM_NOT_FOUND:
+    'There is no such album with provided ID in database. Check your album ID one more time.',
 };
 
 export { ERR_MSG };

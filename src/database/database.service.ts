@@ -7,6 +7,9 @@ import { CreateTrackDto } from 'src/track/dto/create-track.dto';
 import { UpdateTrackDto } from 'src/track/dto/update-track.dto';
 import { CreateArtistDto } from 'src/artist/dto/create-artist.dto';
 import { UpdateArtistDto } from 'src/artist/dto/update-artist.dto';
+import { Album } from 'src/album/entities/album.entity';
+import { CreateAlbumDto } from 'src/album/dto/create-album.dto';
+import { UpdateAlbumDto } from 'src/album/dto/update-album.dto';
 
 const mockUsers = [
   new User({ password: '1234', login: 'Oleg' }),
@@ -28,15 +31,22 @@ const mockArtits = [
   new Artist({ name: 'DayteTank', grammy: false }),
 ];
 
+const mockAlbums = [
+  new Album({ name: 'Jhal net rhujiya', year: 2002, artistId: 'oooaaa' }),
+  new Album({ name: 'Motorhead', year: 1977, artistId: 'aaaooo' }),
+];
+
 @Injectable()
 export class DatabaseService {
   usersList: User[];
   tracksList: Track[];
   artistsList: Artist[];
+  albumsList: Album[];
   constructor() {
     this.usersList = mockUsers;
     this.tracksList = mockTracks;
     this.artistsList = mockArtits;
+    this.albumsList = mockAlbums;
   }
   getAllUsers() {
     return this.usersList;
@@ -90,5 +100,23 @@ export class DatabaseService {
   }
   deleteArtist(id: string) {
     this.artistsList = this.artistsList.filter((artist) => artist.id !== id);
+  }
+
+  getAllAlbums() {
+    return this.albumsList;
+  }
+  getAlbumById(id: string) {
+    return this.albumsList.find((album) => album.id === id);
+  }
+  createAlbum(createAlbumDto: CreateAlbumDto) {
+    const album = new Album(createAlbumDto);
+    this.albumsList.push(album);
+    return album;
+  }
+  updateAlbum(album: Album, updateAlbumDto: UpdateAlbumDto) {
+    album.updateAlbum(updateAlbumDto);
+  }
+  deleteAlbum(id: string) {
+    this.albumsList = this.albumsList.filter((album) => album.id !== id);
   }
 }
