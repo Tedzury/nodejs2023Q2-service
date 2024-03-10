@@ -126,5 +126,12 @@ export class DatabaseService {
   }
   deleteAlbum(id: string) {
     this.albumsList = this.albumsList.filter((album) => album.id !== id);
+    this.removeAlbumIdFromTracks(id);
+  }
+
+  removeAlbumIdFromTracks(albumId: string) {
+    this.tracksList.forEach((track) => {
+      if (track.albumId === albumId) track.albumId = null;
+    });
   }
 }
