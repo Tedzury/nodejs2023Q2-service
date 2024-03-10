@@ -10,6 +10,7 @@ import { UpdateArtistDto } from 'src/artist/dto/update-artist.dto';
 import { Album } from 'src/album/entities/album.entity';
 import { CreateAlbumDto } from 'src/album/dto/create-album.dto';
 import { UpdateAlbumDto } from 'src/album/dto/update-album.dto';
+import { Fav } from 'src/favs/entities/fav.entity';
 
 const mockUsers = [
   new User({ password: '1234', login: 'Oleg' }),
@@ -42,11 +43,13 @@ export class DatabaseService {
   tracksList: Track[];
   artistsList: Artist[];
   albumsList: Album[];
+  favouritesList: Fav;
   constructor() {
     this.usersList = mockUsers;
     this.tracksList = mockTracks;
     this.artistsList = mockArtits;
     this.albumsList = mockAlbums;
+    this.favouritesList = new Fav();
   }
   getAllUsers() {
     return this.usersList;
