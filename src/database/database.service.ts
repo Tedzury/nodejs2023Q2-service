@@ -108,6 +108,8 @@ export class DatabaseService {
   }
   deleteArtist(id: string) {
     this.artistsList = this.artistsList.filter((artist) => artist.id !== id);
+    this.removeArtistIdFromTracks(id);
+    this.removeArtistIdFromAlbums(id);
   }
 
   getAllAlbums() {
@@ -132,6 +134,16 @@ export class DatabaseService {
   removeAlbumIdFromTracks(albumId: string) {
     this.tracksList.forEach((track) => {
       if (track.albumId === albumId) track.albumId = null;
+    });
+  }
+  removeArtistIdFromTracks(artistId: string) {
+    this.tracksList.forEach((track) => {
+      if (track.artistId === artistId) track.artistId = null;
+    });
+  }
+  removeArtistIdFromAlbums(artistId: string) {
+    this.albumsList.forEach((album) => {
+      if (album.artistId === artistId) album.artistId = null;
     });
   }
 }
