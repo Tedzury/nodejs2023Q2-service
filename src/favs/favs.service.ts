@@ -8,7 +8,7 @@ export class FavsService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   findAll() {
-    return this.databaseService.favouritesList.getAllFavourites();
+    return this.databaseService.getAllFavourites();
   }
 
   addArtist(id: string) {

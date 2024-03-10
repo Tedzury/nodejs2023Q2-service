@@ -9,23 +9,11 @@ export class Fav {
   }
 
   getAllFavourites() {
-    const artists =
-      this.artists.length > 0
-        ? `Favourite artists IDs: ${this.artists.join(', ')}.`
-        : 'No favourite artists yet';
-    const albums =
-      this.albums.length > 0
-        ? `Favourite albums IDs: ${this.albums.join(', ')}.`
-        : 'No favourite albums yet';
-    const tracks =
-      this.tracks.length > 0
-        ? `Favourite tracks IDs: ${this.tracks.join(', ')}.`
-        : 'No favourite tracks yet';
-    return `
-    ${artists}
-    ${albums}
-    ${tracks}
-    `;
+    return {
+      artists: this.artists,
+      albums: this.albums,
+      tracks: this.tracks,
+    };
   }
 
   getArtistById(artistId: string) {

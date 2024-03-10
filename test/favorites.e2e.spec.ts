@@ -1,16 +1,7 @@
 import { request } from './lib';
 import { StatusCodes } from 'http-status-codes';
-import {
-  getTokenAndUserId,
-  shouldAuthorizationBeTested,
-  removeTokenUser,
-} from './utils';
-import {
-  albumsRoutes,
-  artistsRoutes,
-  tracksRoutes,
-  favoritesRoutes,
-} from './endpoints';
+import { getTokenAndUserId, shouldAuthorizationBeTested, removeTokenUser } from './utils';
+import { albumsRoutes, artistsRoutes, tracksRoutes, favoritesRoutes } from './endpoints';
 
 const createAlbumDto = {
   name: 'TEST_ALBUM',
@@ -347,9 +338,7 @@ describe('Favorites (e2e)', () => {
         .delete(favoritesRoutes.albums(albumId))
         .set(commonHeaders);
 
-      expect(deleteAlbumFromFavoritesResponse.status).toBe(
-        StatusCodes.NO_CONTENT,
-      );
+      expect(deleteAlbumFromFavoritesResponse.status).toBe(StatusCodes.NO_CONTENT);
 
       const response = await unauthorizedRequest
         .get(favoritesRoutes.getAll)
@@ -391,9 +380,7 @@ describe('Favorites (e2e)', () => {
         .delete(favoritesRoutes.artists(artistId))
         .set(commonHeaders);
 
-      expect(deleteArtistFromFavoritesResponse.status).toBe(
-        StatusCodes.NO_CONTENT,
-      );
+      expect(deleteArtistFromFavoritesResponse.status).toBe(StatusCodes.NO_CONTENT);
 
       const response = await unauthorizedRequest
         .get(favoritesRoutes.getAll)
@@ -435,9 +422,7 @@ describe('Favorites (e2e)', () => {
         .delete(favoritesRoutes.tracks(trackId))
         .set(commonHeaders);
 
-      expect(deleteTrackFromFavoritesResponse.status).toBe(
-        StatusCodes.NO_CONTENT,
-      );
+      expect(deleteTrackFromFavoritesResponse.status).toBe(StatusCodes.NO_CONTENT);
 
       const response = await unauthorizedRequest
         .get(favoritesRoutes.getAll)
@@ -471,25 +456,19 @@ describe('Favorites (e2e)', () => {
         .delete(albumsRoutes.delete(randomUUID))
         .set(commonHeaders);
 
-      expect(albumsDeletionFromFavoritesResponse.status).toBe(
-        StatusCodes.NOT_FOUND,
-      );
+      expect(albumsDeletionFromFavoritesResponse.status).toBe(StatusCodes.NOT_FOUND);
 
       const artistsDeletionFromFavoritesResponse = await unauthorizedRequest
         .delete(artistsRoutes.delete(randomUUID))
         .set(commonHeaders);
 
-      expect(artistsDeletionFromFavoritesResponse.status).toBe(
-        StatusCodes.NOT_FOUND,
-      );
+      expect(artistsDeletionFromFavoritesResponse.status).toBe(StatusCodes.NOT_FOUND);
 
       const tracksDeletionFromFavoritesResponse = await unauthorizedRequest
         .delete(tracksRoutes.delete(randomUUID))
         .set(commonHeaders);
 
-      expect(tracksDeletionFromFavoritesResponse.status).toBe(
-        StatusCodes.NOT_FOUND,
-      );
+      expect(tracksDeletionFromFavoritesResponse.status).toBe(StatusCodes.NOT_FOUND);
     });
   });
 });
