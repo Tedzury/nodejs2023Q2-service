@@ -12,31 +12,6 @@ import { CreateAlbumDto } from 'src/album/dto/create-album.dto';
 import { UpdateAlbumDto } from 'src/album/dto/update-album.dto';
 import { Fav } from 'src/favs/entities/fav.entity';
 
-const mockUsers = [
-  new User({ password: '1234', login: 'Oleg' }),
-  new User({ password: '1234', login: 'Artem' }),
-];
-
-const mockTracks = [
-  new Track({ name: 'Ketchup song', duration: 300, artistId: null, albumId: null }),
-  new Track({
-    name: 'Past lives',
-    duration: 200,
-    artistId: '179a5ae9-188b-4258-9bc3-c66b85122337',
-    albumId: '179a5ae9-188b-4258-9bc3-c66b85122338',
-  }),
-];
-
-const mockArtits = [
-  new Artist({ name: 'Miley Cirus', grammy: true }),
-  new Artist({ name: 'DayteTank', grammy: false }),
-];
-
-const mockAlbums = [
-  new Album({ name: 'Jhal net rhujiya', year: 2002, artistId: 'oooaaa' }),
-  new Album({ name: 'Motorhead', year: 1977, artistId: 'aaaooo' }),
-];
-
 @Injectable()
 export class DatabaseService {
   usersList: User[];
@@ -45,10 +20,10 @@ export class DatabaseService {
   albumsList: Album[];
   favouritesList: Fav;
   constructor() {
-    this.usersList = mockUsers;
-    this.tracksList = mockTracks;
-    this.artistsList = mockArtits;
-    this.albumsList = mockAlbums;
+    this.usersList = [];
+    this.tracksList = [];
+    this.artistsList = [];
+    this.albumsList = [];
     this.favouritesList = new Fav();
   }
   getAllUsers() {
