@@ -106,9 +106,7 @@ describe('Refresh (e2e)', () => {
         login: userTokens.login,
       };
       const refreshToken = generateRefreshToken(payload, { expiresIn: '0s' });
-      const response = await request
-        .post(authRoutes.refresh)
-        .send({ refreshToken });
+      const response = await request.post(authRoutes.refresh).send({ refreshToken });
       expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
     });
   });

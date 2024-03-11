@@ -1,0 +1,136 @@
+import { Injectable } from '@nestjs/common';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { User } from 'src/user/entities/user.entity';
+import { Track } from 'src/track/entities/track.entity';
+import { Artist } from 'src/artist/entities/artist.entity';
+import { CreateTrackDto } from 'src/track/dto/create-track.dto';
+import { UpdateTrackDto } from 'src/track/dto/update-track.dto';
+import { CreateArtistDto } from 'src/artist/dto/create-artist.dto';
+import { UpdateArtistDto } from 'src/artist/dto/update-artist.dto';
+import { Album } from 'src/album/entities/album.entity';
+import { CreateAlbumDto } from 'src/album/dto/create-album.dto';
+import { UpdateAlbumDto } from 'src/album/dto/update-album.dto';
+import { Fav } from 'src/favs/entities/fav.entity';
+
+@Injectable()
+export class DatabaseService {
+  usersList: User[];
+  tracksList: Track[];
+  artistsList: Artist[];
+  albumsList: Album[];
+  favouritesList: Fav;
+  constructor() {
+    this.usersList = [];
+    this.tracksList = [];
+    this.artistsList = [];
+    this.albumsList = [];
+    this.favouritesList = new Fav();
+  }
+  getAllUsers() {
+    return this.usersList;
+  }
+  getUserById(id: string) {
+    return this.usersList.find((user) => user.id === id);
+  }
+  createUser(createUserDto: CreateUserDto) {
+    const newUser = new User(createUserDto);
+    this.usersList.push(newUser);
+    const response = { ...newUser };
+    delete response.password;
+    return response;
+  }
+  updateUser(user: User, newPass: string) {
+    user.updatePassword(newPass);
+    const response = { ...user };
+    delete response.password;
+    return response;
+  }
+  deleteUser(id: string) {
+    this.usersList = this.usersList.filter((user) => user.id !== id);
+  }
+
+  getAllTracks() {
+    return this.tracksList;
+  }
+  getTrackById(id: string) {
+    return this.tracksList.find((track) => track.id === id);
+  }
+  createTrack(createTrackDto: CreateTrackDto) {
+    const track = new Track(createTrackDto);
+    this.tracksList.push(track);
+    return track;
+  }
+  updateTrack(track: Track, updateTrackDto: UpdateTrackDto) {
+    track.updateTrack(updateTrackDto);
+  }
+  deleteTrack(id: string) {
+    this.tracksList = this.tracksList.filter((track) => track.id !== id);
+    this.favouritesList.removeTrack(id);
+  }
+
+  getAllArtists() {
+    return this.artistsList;
+  }
+  getArtistById(id: string) {
+    return this.artistsList.find((artist) => artist.id === id);
+  }
+  createArtist(createArtistDto: CreateArtistDto) {
+    const artist = new Artist(createArtistDto);
+    this.artistsList.push(artist);
+    return artist;
+  }
+  updateArtist(artist: Artist, updateArtistDto: UpdateArtistDto) {
+    artist.updateArtist(updateArtistDto);
+  }
+  deleteArtist(id: string) {
+    this.artistsList = this.artistsList.filter((artist) => artist.id !== id);
+    this.removeArtistIdFromTracks(id);
+    this.removeArtistIdFromAlbums(id);
+    this.favouritesList.removeArtist(id);
+  }
+
+  getAllAlbums() {
+    return this.albumsList;
+  }
+  getAlbumById(id: string) {
+    return this.albumsList.find((album) => album.id === id);
+  }
+  createAlbum(createAlbumDto: CreateAlbumDto) {
+    const album = new Album(createAlbumDto);
+    this.albumsList.push(album);
+    return album;
+  }
+  updateAlbum(album: Album, updateAlbumDto: UpdateAlbumDto) {
+    album.updateAlbum(updateAlbumDto);
+  }
+  deleteAlbum(id: string) {
+    this.albumsList = this.albumsList.filter((album) => album.id !== id);
+    this.removeAlbumIdFromTracks(id);
+    this.favouritesList.removeAlbum(id);
+  }
+
+  getAllFavourites() {
+    const favs = this.favouritesList.getAllFavourites();
+    return {
+      artists: favs.artists.map((artistId) => this.getArtistById(artistId)),
+      albums: favs.albums.map((albumId) => this.getAlbumById(albumId)),
+      tracks: favs.tracks.map((trackId) => this.getTrackById(trackId)),
+    };
+  }
+
+  removeAlbumIdFromTracks(albumId: string) {
+    this.tracksList.forEach((track) => {
+      if (track.albumId === albumId) track.albumId = null;
+    });
+  }
+  removeArtistIdFromTracks(artistId: string) {
+    this.tracksList.forEach((track) => {
+      if (track.artistId === artistId) track.artistId = null;
+    });
+  }
+  removeArtistIdFromAlbums(artistId: string) {
+    this.albumsList.forEach((album) => {
+      if (album.artistId === artistId) album.artistId = null;
+    });
+  }
+}
