@@ -12,14 +12,16 @@ USER root
 
 RUN chown -R app:app .
 
+RUN chmod -R 777 .
+
 USER app
 
 RUN npm install
 
 COPY . . 
 
-# RUN npx prisma generate
+RUN npx prisma generate
 
 EXPOSE ${PORT} 
 
-CMD npm run start:dev
+CMD npm run start:dev:migrate

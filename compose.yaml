@@ -2,15 +2,13 @@ version: "3.8"
 
 services:
   db:
-    container_name: db
-    image: postgres:16.2-alpine
-    # build: 
-    #  context: ./database
+    container_name: ${DB_HOST}
+    build: 
+     context: ./database
     volumes:
       - db_volume:/var/lib/postgresql/data
       - ./logs:/logs:z
-    # restart: unless-stopped
-    user: postgres
+    restart: unless-stopped
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_USER=${DB_USER}
@@ -20,7 +18,7 @@ services:
     expose:
       - ${DB_PORT}
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}" ]
+      test: [ "CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -29,28 +27,29 @@ services:
 
   api:
     container_name: api 
-    depends_on: 
-      - db
+    depends_on:
+      db:
+        condition: service_healthy
     build: 
       context: .
       dockerfile: Dockerfile
     ports: 
       - ${PORT}:${PORT}
-    # restart: unless-stopped
+    restart: unless-stopped
     networks: 
       - my_network
     volumes: 
       - ./src:/usr/app/src
-    # develop:
-    #   watch:
-    #     - path: ./package.json
-    #       action: rebuild
-    #     - path: ./package-lock.json
-    #       action: rebuild
+    develop:
+      watch:
+        - path: ./package.json
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
         
-    #     - path: .
-    #       target: /app
-    #       action: sync
+        - path: .
+          target: /app
+          action: sync
 
 volumes:
   db_volume:

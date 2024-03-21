@@ -1,20 +1,20 @@
-import { Injectable } from '@nestjs/common';
-// import { Injectable, Inject } from '@nestjs/common';
-// import { prismaTestService } from './prismaTest/prismaTest.service';
+// import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { prismaTestService } from './prismaTest/prismaTest.service';
 
 @Injectable()
 export class AppService {
-  // constructor(@Inject(prismaTestService) private database: prismaTestService) {}
+  constructor(@Inject(prismaTestService) private database: prismaTestService) {}
+  getTests(): {} {
+    return this.database.test.findMany();
+  }
+  addTest(dto: { name: string; age: number }) {
+    return this.database.test.create({ data: dto });
+  }
   // getTests(): string {
-  //   return this.database.test.findMany();
+  //   return 'zalupa';
   // }
-  // addTest(dto: { name: string; age: number }) {
-  //   return this.database.test.create({ data: dto });
+  // addTest() {
+  //   return 'zalupa2';
   // }
-  getTests(): string {
-    return 'zalupa';
-  }
-  addTest() {
-    return 'zalupa2';
-  }
 }
