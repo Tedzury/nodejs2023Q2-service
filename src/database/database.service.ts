@@ -11,6 +11,8 @@ import { Album } from 'src/album/entities/album.entity';
 import { CreateAlbumDto } from 'src/album/dto/create-album.dto';
 import { UpdateAlbumDto } from 'src/album/dto/update-album.dto';
 import { Fav } from 'src/favs/entities/fav.entity';
+import { PrismaClientService } from 'src/prismaClient/prismaClient.service';
+import { formatUser } from 'src/shared/helpers';
 
 @Injectable()
 export class DatabaseService {
@@ -19,34 +21,45 @@ export class DatabaseService {
   artistsList: Artist[];
   albumsList: Album[];
   favouritesList: Fav;
-  constructor() {
+  constructor(private readonly prismaService: PrismaClientService) {
     this.usersList = [];
     this.tracksList = [];
     this.artistsList = [];
     this.albumsList = [];
     this.favouritesList = new Fav();
   }
-  getAllUsers() {
-    return this.usersList;
+  async getAllUsers() {
+    return this.prismaService.user.findMany();
   }
-  getUserById(id: string) {
-    return this.usersList.find((user) => user.id === id);
+  async getUserById(id: string) {
+    return this.prismaService.user.findUnique({ where: { id } });
   }
-  createUser(createUserDto: CreateUserDto) {
-    const newUser = new User(createUserDto);
-    this.usersList.push(newUser);
-    const response = { ...newUser };
-    delete response.password;
-    return response;
+  async createUser(createUserDto: CreateUserDto) {
+    const newUser = await this.prismaService.user.create({
+      data: createUserDto,
+    });
+    return formatUser(newUser);
   }
-  updateUser(user: User, newPass: string) {
-    user.updatePassword(newPass);
-    const response = { ...user };
-    delete response.password;
-    return response;
+  async updateUser(id: string, newPass: string) {
+    try {
+      const user = await this.prismaService.user.update({
+        where: { id },
+        data: {
+          password: newPass,
+          version: { increment: 1 },
+        },
+      });
+      return formatUser(user);
+    } catch (e) {
+      return null;
+    }
   }
-  deleteUser(id: string) {
-    this.usersList = this.usersList.filter((user) => user.id !== id);
+  async deleteUser(id: string) {
+    try {
+      return await this.prismaService.user.delete({ where: { id } });
+    } catch (e) {
+      return null;
+    }
   }
 
   getAllTracks() {

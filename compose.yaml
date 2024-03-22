@@ -48,8 +48,8 @@ services:
           action: rebuild
         
         - path: .
-          target: /app
           action: sync
+          target: /app
 
 volumes:
   db_volume:

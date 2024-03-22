@@ -14,4 +14,14 @@ const buildValidationErrMsg = (errList: ValidationError[]) => {
   }, 'You are trying to pass invalid object for such operation. Here is list of errors made: ');
 };
 
-export { getTimeStamp, buildValidationErrMsg };
+const formatUser = (user) => {
+  return {
+    id: user.id,
+    login: user.login,
+    version: user.version,
+    createdAt: new Date(user.createdAt).getTime(),
+    updatedAt: new Date(user.updatedAt).getTime(),
+  };
+};
+
+export { getTimeStamp, buildValidationErrMsg, formatUser };
