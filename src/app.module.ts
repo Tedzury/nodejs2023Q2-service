@@ -7,11 +7,11 @@ import { TrackModule } from './track/track.module';
 import { AlbumModule } from './album/album.module';
 import { DatabaseModule } from './database/database.module';
 import { FavsModule } from './favs/favs.module';
-import { prismaTestModule } from './prismaTest/prismaTest.module';
+import { prismaClientModule } from './prismaClient/prismaClient.module';
 
 @Module({
   imports: [
-    prismaTestModule,
+    prismaClientModule,
     FavsModule,
     UserModule,
     ArtistModule,

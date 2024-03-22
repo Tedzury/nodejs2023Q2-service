@@ -23,7 +23,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "engines": {
-    "node": "20.11.0"
+    "node": "20.11.1"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.3",

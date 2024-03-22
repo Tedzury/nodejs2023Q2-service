@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { env } from 'process';
 
 @Injectable()
-export class prismaTestService extends PrismaClient {
+export class prismaClientService extends PrismaClient {
   constructor() {
     super({
       datasources: {
