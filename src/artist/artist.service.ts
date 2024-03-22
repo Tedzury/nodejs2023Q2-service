@@ -24,14 +24,14 @@ export class ArtistService {
     return artist;
   }
 
-  findAll() {
-    return this.databaseService.getAllArtists();
+  async findAll() {
+    return await this.databaseService.getAllArtists();
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const artist = this.databaseService.getArtistById(id);
+      const artist = await this.databaseService.getArtistById(id);
       if (artist) return artist;
       throw new HttpException(ERR_MSG.ARTIST_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
@@ -41,7 +41,7 @@ export class ArtistService {
   async update(id: string, updateArtistDto: UpdateArtistDto) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const artist = this.databaseService.getArtistById(id);
+      const artist = await this.databaseService.getArtistById(id);
       if (artist) {
         const dto = new UpdateArtistDto(updateArtistDto);
 
@@ -51,21 +51,19 @@ export class ArtistService {
           const msg = buildValidationErrMsg(validationErrors);
           throw new HttpException(msg, HttpStatus.BAD_REQUEST);
         }
-        artist.updateArtist(dto);
-        return artist;
+        return await this.databaseService.updateArtist(artist.id, dto);
       }
       throw new HttpException(ERR_MSG.ARTIST_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
     throw new HttpException(ERR_MSG.INVALID_ID, HttpStatus.BAD_REQUEST);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const artist = this.databaseService.getArtistById(id);
+      const artist = await this.databaseService.getArtistById(id);
       if (artist) {
-        this.databaseService.deleteArtist(id);
-        return;
+        return await this.databaseService.deleteArtist(id);
       }
       throw new HttpException(ERR_MSG.ARTIST_NOT_FOUND, HttpStatus.NOT_FOUND);
     }

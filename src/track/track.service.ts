@@ -23,7 +23,7 @@ export class TrackService {
 
     const { artistId } = dto;
     if (artistId) {
-      const artist = this.databaseService.getArtistById(artistId);
+      const artist = await this.databaseService.getArtistById(artistId);
       if (!artist) {
         throw new HttpException(ERR_MSG.ARTIST_REJECT, HttpStatus.BAD_REQUEST);
       }
@@ -31,24 +31,23 @@ export class TrackService {
 
     const { albumId } = dto;
     if (albumId) {
-      const album = this.databaseService.getAlbumById(albumId);
+      const album = await this.databaseService.getAlbumById(albumId);
       if (!album) {
         throw new HttpException(ERR_MSG.ALBUM_REJECT, HttpStatus.BAD_REQUEST);
       }
     }
 
-    const track = this.databaseService.createTrack(dto);
-    return track;
+    return await this.databaseService.createTrack(dto);
   }
 
-  findAll() {
-    return this.databaseService.getAllTracks();
+  async findAll() {
+    return await this.databaseService.getAllTracks();
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const track = this.databaseService.getTrackById(id);
+      const track = await this.databaseService.getTrackById(id);
       if (track) return track;
       throw new HttpException(ERR_MSG.TRACK_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
@@ -58,7 +57,7 @@ export class TrackService {
   async update(id: string, updateTrackDto: UpdateTrackDto) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const track = this.databaseService.getTrackById(id);
+      const track = await this.databaseService.getTrackById(id);
       if (track) {
         const dto = new UpdateTrackDto(updateTrackDto);
 
@@ -71,7 +70,7 @@ export class TrackService {
 
         const { artistId } = dto;
         if (artistId) {
-          const artist = this.databaseService.getArtistById(artistId);
+          const artist = await this.databaseService.getArtistById(artistId);
           if (!artist) {
             throw new HttpException(ERR_MSG.ARTIST_REJECT, HttpStatus.BAD_REQUEST);
           }
@@ -79,27 +78,25 @@ export class TrackService {
 
         const { albumId } = dto;
         if (albumId) {
-          const album = this.databaseService.getAlbumById(albumId);
+          const album = await this.databaseService.getAlbumById(albumId);
           if (!album) {
             throw new HttpException(ERR_MSG.ALBUM_REJECT, HttpStatus.BAD_REQUEST);
           }
         }
 
-        track.updateTrack(dto);
-        return track;
+        return await this.databaseService.updateTrack(track.id, dto);
       }
       throw new HttpException(ERR_MSG.TRACK_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
     throw new HttpException(ERR_MSG.INVALID_ID, HttpStatus.BAD_REQUEST);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const track = this.databaseService.getTrackById(id);
+      const track = await this.databaseService.getTrackById(id);
       if (track) {
-        this.databaseService.deleteTrack(id);
-        return;
+        return await this.databaseService.deleteTrack(id);
       }
       throw new HttpException(ERR_MSG.TRACK_NOT_FOUND, HttpStatus.NOT_FOUND);
     }

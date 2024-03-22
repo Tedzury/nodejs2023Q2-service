@@ -62,64 +62,85 @@ export class DatabaseService {
     }
   }
 
-  getAllTracks() {
-    return this.tracksList;
+  async getAllTracks() {
+    return await this.prismaService.track.findMany();
   }
-  getTrackById(id: string) {
-    return this.tracksList.find((track) => track.id === id);
+  async getTrackById(id: string) {
+    return await this.prismaService.track.findUnique({ where: { id } });
   }
-  createTrack(createTrackDto: CreateTrackDto) {
-    const track = new Track(createTrackDto);
-    this.tracksList.push(track);
-    return track;
+  async createTrack(createTrackDto: CreateTrackDto) {
+    return await this.prismaService.track.create({ data: createTrackDto });
   }
-  updateTrack(track: Track, updateTrackDto: UpdateTrackDto) {
-    track.updateTrack(updateTrackDto);
+  async updateTrack(id: string, updateTrackDto: UpdateTrackDto) {
+    try {
+      return await this.prismaService.track.update({
+        where: { id },
+        data: updateTrackDto,
+      });
+    } catch (e) {
+      return null;
+    }
   }
-  deleteTrack(id: string) {
-    this.tracksList = this.tracksList.filter((track) => track.id !== id);
-    this.favouritesList.removeTrack(id);
-  }
-
-  getAllArtists() {
-    return this.artistsList;
-  }
-  getArtistById(id: string) {
-    return this.artistsList.find((artist) => artist.id === id);
-  }
-  createArtist(createArtistDto: CreateArtistDto) {
-    const artist = new Artist(createArtistDto);
-    this.artistsList.push(artist);
-    return artist;
-  }
-  updateArtist(artist: Artist, updateArtistDto: UpdateArtistDto) {
-    artist.updateArtist(updateArtistDto);
-  }
-  deleteArtist(id: string) {
-    this.artistsList = this.artistsList.filter((artist) => artist.id !== id);
-    this.removeArtistIdFromTracks(id);
-    this.removeArtistIdFromAlbums(id);
-    this.favouritesList.removeArtist(id);
+  async deleteTrack(id: string) {
+    try {
+      return await this.prismaService.track.delete({ where: { id } });
+    } catch (e) {
+      return null;
+    }
   }
 
-  getAllAlbums() {
-    return this.albumsList;
+  async getAllArtists() {
+    return await this.prismaService.artist.findMany();
   }
-  getAlbumById(id: string) {
-    return this.albumsList.find((album) => album.id === id);
+  async getArtistById(id: string) {
+    return await this.prismaService.artist.findUnique({ where: { id } });
   }
-  createAlbum(createAlbumDto: CreateAlbumDto) {
-    const album = new Album(createAlbumDto);
-    this.albumsList.push(album);
-    return album;
+  async createArtist(createArtistDto: CreateArtistDto) {
+    return await this.prismaService.artist.create({ data: createArtistDto });
   }
-  updateAlbum(album: Album, updateAlbumDto: UpdateAlbumDto) {
-    album.updateAlbum(updateAlbumDto);
+  async updateArtist(id: string, updateArtistDto: UpdateArtistDto) {
+    try {
+      return await this.prismaService.artist.update({
+        where: { id },
+        data: updateArtistDto,
+      });
+    } catch (e) {
+      return null;
+    }
   }
-  deleteAlbum(id: string) {
-    this.albumsList = this.albumsList.filter((album) => album.id !== id);
-    this.removeAlbumIdFromTracks(id);
-    this.favouritesList.removeAlbum(id);
+  async deleteArtist(id: string) {
+    try {
+      return await this.prismaService.artist.delete({ where: { id } });
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async getAllAlbums() {
+    return await this.prismaService.album.findMany();
+  }
+  async getAlbumById(id: string) {
+    return await this.prismaService.album.findUnique({ where: { id } });
+  }
+  async createAlbum(createAlbumDto: CreateAlbumDto) {
+    return await this.prismaService.album.create({ data: createAlbumDto });
+  }
+  async updateAlbum(id: string, updateAlbumDto: UpdateAlbumDto) {
+    try {
+      return await this.prismaService.album.update({
+        where: { id },
+        data: updateAlbumDto,
+      });
+    } catch (e) {
+      return null;
+    }
+  }
+  async deleteAlbum(id: string) {
+    try {
+      return await this.prismaService.album.delete({ where: { id } });
+    } catch (e) {
+      return null;
+    }
   }
 
   getAllFavourites() {
@@ -129,21 +150,5 @@ export class DatabaseService {
       albums: favs.albums.map((albumId) => this.getAlbumById(albumId)),
       tracks: favs.tracks.map((trackId) => this.getTrackById(trackId)),
     };
-  }
-
-  removeAlbumIdFromTracks(albumId: string) {
-    this.tracksList.forEach((track) => {
-      if (track.albumId === albumId) track.albumId = null;
-    });
-  }
-  removeArtistIdFromTracks(artistId: string) {
-    this.tracksList.forEach((track) => {
-      if (track.artistId === artistId) track.artistId = null;
-    });
-  }
-  removeArtistIdFromAlbums(artistId: string) {
-    this.albumsList.forEach((album) => {
-      if (album.artistId === artistId) album.artistId = null;
-    });
   }
 }

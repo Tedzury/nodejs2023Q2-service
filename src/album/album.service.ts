@@ -23,24 +23,23 @@ export class AlbumService {
 
     const { artistId } = dto;
     if (artistId) {
-      const artist = this.databaseService.getArtistById(artistId);
+      const artist = await this.databaseService.getArtistById(artistId);
       if (!artist) {
         throw new HttpException(ERR_MSG.ARTIST_REJECT, HttpStatus.BAD_REQUEST);
       }
     }
 
-    const album = this.databaseService.createAlbum(dto);
-    return album;
+    return await this.databaseService.createAlbum(dto);
   }
 
-  findAll() {
-    return this.databaseService.getAllAlbums();
+  async findAll() {
+    return await this.databaseService.getAllAlbums();
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const album = this.databaseService.getAlbumById(id);
+      const album = await this.databaseService.getAlbumById(id);
       if (album) return album;
       throw new HttpException(ERR_MSG.ALBUM_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
@@ -50,7 +49,7 @@ export class AlbumService {
   async update(id: string, updateAlbumDto: UpdateAlbumDto) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const album = this.databaseService.getAlbumById(id);
+      const album = await this.databaseService.getAlbumById(id);
       if (album) {
         const dto = new UpdateAlbumDto(updateAlbumDto);
 
@@ -63,27 +62,25 @@ export class AlbumService {
 
         const { artistId } = dto;
         if (artistId) {
-          const artist = this.databaseService.getArtistById(artistId);
+          const artist = await this.databaseService.getArtistById(artistId);
           if (!artist) {
             throw new HttpException(ERR_MSG.ARTIST_REJECT, HttpStatus.BAD_REQUEST);
           }
         }
 
-        album.updateAlbum(dto);
-        return album;
+        return this.databaseService.updateAlbum(album.id, dto);
       }
       throw new HttpException(ERR_MSG.ALBUM_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
     throw new HttpException(ERR_MSG.INVALID_ID, HttpStatus.BAD_REQUEST);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     const isValidId = uuidValidate(id);
     if (isValidId) {
-      const album = this.databaseService.getAlbumById(id);
+      const album = await this.databaseService.getAlbumById(id);
       if (album) {
-        this.databaseService.deleteAlbum(id);
-        return;
+        return await this.databaseService.deleteAlbum(id);
       }
       throw new HttpException(ERR_MSG.ALBUM_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
