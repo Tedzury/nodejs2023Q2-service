@@ -22,11 +22,20 @@ export class DatabaseService {
   albumsList: Album[];
   favouritesList: Fav;
   constructor(private readonly prismaService: PrismaClientService) {
-    this.usersList = [];
-    this.tracksList = [];
-    this.artistsList = [];
-    this.albumsList = [];
-    this.favouritesList = new Fav();
+    this.initFavs();
+  }
+  async initFavs() {
+    try {
+      await this.prismaService.favorites.create({
+        data: {
+          artists: [],
+          albums: [],
+          tracks: [],
+        },
+      });
+    } catch (e) {
+      return null;
+    }
   }
   async getAllUsers() {
     return this.prismaService.user.findMany();
@@ -143,12 +152,110 @@ export class DatabaseService {
     }
   }
 
-  getAllFavourites() {
-    const favs = this.favouritesList.getAllFavourites();
-    return {
-      artists: favs.artists.map((artistId) => this.getArtistById(artistId)),
-      albums: favs.albums.map((albumId) => this.getAlbumById(albumId)),
-      tracks: favs.tracks.map((trackId) => this.getTrackById(trackId)),
-    };
+  async getAllFavouritesFormatted() {
+    try {
+      const favs = await this.prismaService.favorites.findUnique({
+        where: { id: 'favs' },
+      });
+      return {
+        artists: await Promise.all(
+          favs.artists.map(
+            async (artistId: string) => await this.getArtistById(artistId),
+          ),
+        ),
+        albums: await Promise.all(
+          favs.albums.map(async (albumId: string) => await this.getAlbumById(albumId)),
+        ),
+        tracks: await Promise.all(
+          favs.tracks.map(async (trackId: string) => await this.getTrackById(trackId)),
+        ),
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+  async getAllFavourites() {
+    return await this.prismaService.favorites.findUnique({ where: { id: 'favs' } });
+  }
+
+  async addArtistToFavs(id: string) {
+    try {
+      const favs: Fav = await this.getAllFavourites();
+      const artistId = id;
+      await this.prismaService.favorites.update({
+        where: { id: 'favs' },
+        data: {
+          artists: [...favs.artists, artistId],
+        },
+      });
+      return `Artist with ID: ${id} is added to favourites`;
+    } catch (e) {
+      return null;
+    }
+  }
+  async addAlbumToFavs(id: string) {
+    try {
+      const favs = await this.getAllFavourites();
+      const albumId = id;
+      await this.prismaService.favorites.update({
+        where: { id: 'favs' },
+        data: { albums: [...favs.albums, albumId] },
+      });
+      return `Album with ID: ${id} is added to favourites`;
+    } catch (e) {
+      return null;
+    }
+  }
+  async addTrackToFavs(id: string) {
+    try {
+      const favs = await this.getAllFavourites();
+      const trackId = id;
+      await this.prismaService.favorites.update({
+        where: { id: 'favs' },
+        data: { tracks: [...favs.tracks, trackId] },
+      });
+      return `Track with ID: ${id} is added to favourites`;
+    } catch (e) {
+      return null;
+    }
+  }
+  async removeArtistFromFavs(id: string) {
+    try {
+      const favs: Fav = await this.getAllFavourites();
+      await this.prismaService.favorites.update({
+        where: {
+          id: 'favs',
+        },
+        data: { artists: favs.artists.filter((artistId) => artistId !== id) },
+      });
+    } catch (e) {
+      return null;
+    }
+  }
+  async removeAlbumFromFavs(id: string) {
+    try {
+      const favs: Fav = await this.getAllFavourites();
+      await this.prismaService.favorites.update({
+        where: {
+          id: 'favs',
+        },
+        data: { albums: favs.albums.filter((albumId) => albumId !== id) },
+      });
+    } catch (e) {
+      return null;
+    }
+  }
+  async removeTrackFromFavs(id: string) {
+    try {
+      const favs: Fav = await this.getAllFavourites();
+      await this.prismaService.favorites.update({
+        where: {
+          id: 'favs',
+        },
+        data: { tracks: favs.tracks.filter((tracksId) => tracksId !== id) },
+      });
+    } catch (e) {
+      return null;
+    }
   }
 }

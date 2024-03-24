@@ -23,8 +23,6 @@ model Artist {
   grammy      Boolean
   tracks      Track[]
   album       Album[]
-  favorites   Favorites? @relation(fields: [favoritesId], references: [id])
-  favoritesId String?
 }
 
 model Album {
@@ -34,8 +32,6 @@ model Album {
   artist      Artist?    @relation(fields: [artistId], references: [id], onDelete: SetNull)
   artistId    String?
   tracks      Track[]
-  favorites   Favorites? @relation(fields: [favoritesId], references: [id])
-  favoritesId String?
 }
 
 model Track {
@@ -46,13 +42,11 @@ model Track {
   album       Album?     @relation(fields: [albumId], references: [id], onDelete: SetNull)
   albumId     String?
   duration    Int
-  favorites   Favorites? @relation(fields: [favoritesId], references: [id])
-  favoritesId String?
 }
 
 model Favorites {
   id      String   @id @default("favs")
-  artists Artist[]
-  albums  Album[]
-  tracks  Track[]
+  artists String[]
+  albums  String[]
+  tracks  String[]
 }
