@@ -180,19 +180,15 @@ export class DatabaseService {
       });
       return {
         artists: await Promise.all(
-          favs.artists
-            .filter((val) => val)
-            .map(async (artistId: string) => await this.getArtistById(artistId)),
+          favs.artists.map(
+            async (artistId: string) => await this.getArtistById(artistId),
+          ),
         ),
         albums: await Promise.all(
-          favs.albums
-            .filter((val) => val)
-            .map(async (albumId: string) => await this.getAlbumById(albumId)),
+          favs.albums.map(async (albumId: string) => await this.getAlbumById(albumId)),
         ),
         tracks: await Promise.all(
-          favs.tracks
-            .filter((val) => val)
-            .map(async (trackId: string) => await this.getTrackById(trackId)),
+          favs.tracks.map(async (trackId: string) => await this.getTrackById(trackId)),
         ),
       };
     } catch (e) {

@@ -4,11 +4,7 @@
 
 Hello, Reviewer! Here is detailed instructions on how to start project and run test!
 
-## Downloading
-
-```
-git clone {repository URL}
-```
+Here is link to pushed docker image: https://hub.docker.com/repository/docker/tedzury/nodejs_home_lib_api/general
 
 ## Installing NPM modules
 

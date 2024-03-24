@@ -7,7 +7,6 @@ services:
      context: ./database
     volumes:
       - db_volume:/var/lib/postgresql/data
-      - ./logs:/logs:z
     restart: unless-stopped
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}

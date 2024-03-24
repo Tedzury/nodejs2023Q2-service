@@ -22,7 +22,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "docker:start:dev": "docker compose watch",
-    "docker:finish:dev": "docker compose down -v && docker rmi nodejs2023q2-service-api && docker rmi nodejs2023q2-service-db"
+    "docker:finish:dev": "docker compose down"
   },
   "engines": {
     "node": "20.11.1"
