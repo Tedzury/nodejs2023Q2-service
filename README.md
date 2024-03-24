@@ -2,14 +2,9 @@
 
 ## Prerequisites
 
-- Git - [Download & Install Git](https://git-scm.com/downloads).
-- Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+Hello, Reviewer! Here is detailed instructions on how to start project and run test!
 
-## Downloading
-
-```
-git clone {repository URL}
-```
+Here is link to pushed docker image: https://hub.docker.com/repository/docker/tedzury/nodejs_home_lib_api/general
 
 ## Installing NPM modules
 
@@ -17,15 +12,50 @@ git clone {repository URL}
 npm install
 ```
 
-## Running application
+## Make .env file
+
+Make your own .env file and copy content of .env.example into it, or just copy .env.example and rename it into .env.
+
+## Docker:
+
+Make sure you have Docker installed and running on your machine.
+
+## Running application:
+
+NB! Make sure you have no active running versions of application on you machine. Turn all off any another Docker container running previosly.
+
+So, here are instructions:
+
+Open terminal and type: 
 
 ```
-npm start
+npm run docker:start:dev
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+Then you can run is second terminal: 
+
+```
+npm run test
+```
+
+To check out if tests are actually passing.
+
+After you finish checking out the task - come back to first terminal, press Ctrl + C;
+Then open second terminal and type:
+
+```
+npm run docker:finish:dev
+```
+
+So, here you are. Everything done;
+
+## Run test command
+
+```
+npm run test
+```
+
+Run this command into CLI and see 67 test cases completed. Here is it, that simple :)
 
 ## Testing
 

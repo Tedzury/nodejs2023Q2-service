@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: ${DB_HOST}
+    build: 
+     context: ./database
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+    ports: 
+      - ${DB_PORT}:${DB_PORT}
+    expose:
+      - ${DB_PORT}
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - my_network
+
+  api:
+    container_name: api 
+    depends_on:
+      db:
+        condition: service_healthy
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - ${PORT}:${PORT}
+    restart: unless-stopped
+    networks: 
+      - my_network
+    volumes: 
+      - ./src:/usr/app/src
+    develop:
+      watch:
+        - path: ./package.json
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
+        
+        - path: .
+          action: sync
+          target: /app
+
+volumes:
+  db_volume:
+networks: 
+  my_network:
+    name: my_network
+    driver: bridge
