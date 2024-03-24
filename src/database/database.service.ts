@@ -92,6 +92,13 @@ export class DatabaseService {
   }
   async deleteTrack(id: string) {
     try {
+      const favs: Fav = await this.getAllFavourites();
+      await this.prismaService.favorites.update({
+        where: {
+          id: 'favs',
+        },
+        data: { tracks: favs.tracks.filter((tracksId) => tracksId !== id) },
+      });
       return await this.prismaService.track.delete({ where: { id } });
     } catch (e) {
       return null;
@@ -119,6 +126,13 @@ export class DatabaseService {
   }
   async deleteArtist(id: string) {
     try {
+      const favs: Fav = await this.getAllFavourites();
+      await this.prismaService.favorites.update({
+        where: {
+          id: 'favs',
+        },
+        data: { artists: favs.artists.filter((artistId) => artistId !== id) },
+      });
       return await this.prismaService.artist.delete({ where: { id } });
     } catch (e) {
       return null;
@@ -146,6 +160,13 @@ export class DatabaseService {
   }
   async deleteAlbum(id: string) {
     try {
+      const favs: Fav = await this.getAllFavourites();
+      await this.prismaService.favorites.update({
+        where: {
+          id: 'favs',
+        },
+        data: { albums: favs.albums.filter((albumId) => albumId !== id) },
+      });
       return await this.prismaService.album.delete({ where: { id } });
     } catch (e) {
       return null;
@@ -159,15 +180,19 @@ export class DatabaseService {
       });
       return {
         artists: await Promise.all(
-          favs.artists.map(
-            async (artistId: string) => await this.getArtistById(artistId),
-          ),
+          favs.artists
+            .filter((val) => val)
+            .map(async (artistId: string) => await this.getArtistById(artistId)),
         ),
         albums: await Promise.all(
-          favs.albums.map(async (albumId: string) => await this.getAlbumById(albumId)),
+          favs.albums
+            .filter((val) => val)
+            .map(async (albumId: string) => await this.getAlbumById(albumId)),
         ),
         tracks: await Promise.all(
-          favs.tracks.map(async (trackId: string) => await this.getTrackById(trackId)),
+          favs.tracks
+            .filter((val) => val)
+            .map(async (trackId: string) => await this.getTrackById(trackId)),
         ),
       };
     } catch (e) {
